@@ -48,6 +48,10 @@ public final class MarvisAnnouncer {
         set { marvis.speechPriority = newValue }
     }
 
+    /// True from an accepted announcement until its last sample has played or it was stopped. The same
+    /// span is bracketed by `queuedNotification` and `finishedNotification`.
+    public var isSpeaking: Bool { marvis.isSpeaking }
+
     /// Marvis runs on the Metal GPU; it is unavailable on the simulator.
     public var isAvailable: Bool {
         #if targetEnvironment(simulator)

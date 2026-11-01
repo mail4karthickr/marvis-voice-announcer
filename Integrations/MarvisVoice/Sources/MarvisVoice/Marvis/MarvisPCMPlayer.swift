@@ -214,7 +214,9 @@ actor MarvisPCMPlayer {
         let session = AVAudioSession.sharedInstance()
         if session.category == .playAndRecord || session.category == .record {
             MarvisDiagnostics.log("player: host session is \(session.category.rawValue), keeping it")
-            if session.category == .playAndRecord, !session.categoryOptions.contains(.defaultToSpeaker) {
+            // Only the earpiece receiver is a problem for speech; headphones, Bluetooth and CarPlay stay as they are.
+            let onReceiver = session.currentRoute.outputs.contains { $0.portType == .builtInReceiver }
+            if session.category == .playAndRecord, onReceiver {
                 do {
                     try session.overrideOutputAudioPort(.speaker)
                 } catch {
