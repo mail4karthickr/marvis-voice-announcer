@@ -26,7 +26,7 @@ announcer.announce(["Hello there."])        // replaces anything currently being
 accepted and when the last sample has played; a host that runs a speech recognizer gates its microphone on them.
 `audioTap` receives every PCM chunk for recording or analysis.
 
-Requirements: iOS 26, a Metal device (no simulator), about 1.2 GB of memory while speaking, roughly 1 GB of
+Requirements: iOS 17 (the Foundation Models convenience overload needs iOS 26), a Metal device (no simulator), about 1.2 GB of memory while speaking, roughly 1 GB of
 model downloads on first use. Build in Release for realistic performance.
 
 ## What the package handles

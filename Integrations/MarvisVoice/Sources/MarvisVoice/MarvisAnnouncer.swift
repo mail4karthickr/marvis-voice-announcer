@@ -6,7 +6,6 @@ import Metal
 /// Drives the same `Marvis` entry points as the Marvis demo, so the host app's voice speak-over and the demo share
 /// one synthesis/playback path. The host registers this with its voice provider factory, and the conformance to the
 /// host's announcer protocol is declared there, so this engine package stays independent of the host.
-@available(iOS 26.0, *)
 @MainActor
 public final class MarvisAnnouncer {
     /// Posted when an announcement is accepted and when the last one has finished playing. A host that runs a

@@ -1,11 +1,14 @@
 import Foundation
-import FoundationModels
 import Observation
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
 
 /// Expressive on-device speech for text and streamed Foundation Models replies.
 ///
-/// Drop the `Marvis` folder into an iOS 26 app target that links the `MLXAudioTTS`
+/// Drop the `Marvis` folder into an iOS 17 app target that links the `MLXAudioTTS`
 /// product of mlx-audio-swift. Everything else in the folder is an implementation detail.
+/// Only the Foundation Models convenience overload needs iOS 26.
 ///
 ///     let marvis = Marvis()
 ///     try await marvis.speak("Hello there.")
@@ -26,7 +29,6 @@ public enum MarvisSpeechPriority: Sendable {
     case continuity
 }
 
-@available(iOS 26.0, *)
 @MainActor @Observable
 public final class Marvis {
     public enum Voice: Sendable {
@@ -130,13 +132,16 @@ public final class Marvis {
         }
     }
 
+    #if canImport(FoundationModels)
     /// Speaks a Foundation Models reply as it streams: pass `session.streamResponse(to:)` directly.
+    @available(iOS 26.0, *)
     public func speak(
         _ response: LanguageModelSession.ResponseStream<String>,
         onText: (@MainActor (String) -> Void)? = nil
     ) async throws {
         try await speak(response.map { $0.content }, format: .cumulative, onText: onText)
     }
+    #endif
 
     /// Stops generation and playback immediately. The interrupted `speak` throws `CancellationError`.
     public func stop() {
