@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "MarvisVoice",
+    name: "WFFargoMarvisVoice",
     platforms: [.iOS(.v17)],
     products: [
-        .library(name: "MarvisVoice", targets: ["MarvisVoice"]),
+        .library(name: "WFFargoMarvisVoice", targets: ["WFFargoMarvisVoice"]),
     ],
     dependencies: [
         .package(name: "MLXAudio", path: "../mlx-audio-swift"),
     ],
     targets: [
         .target(
-            name: "MarvisVoice",
+            name: "WFFargoMarvisVoice",
             dependencies: [
                 .product(name: "MLXAudioTTS", package: "MLXAudio"),
             ]

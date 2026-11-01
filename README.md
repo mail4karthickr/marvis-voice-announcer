@@ -7,22 +7,22 @@ and MLX, packaged for a host app that announces replies and gates a speech recog
 
 | Path | What it is |
 |---|---|
-| `Integrations/MarvisVoice` | The Swift package a host app links. Entry point: `MarvisAnnouncer`. |
-| `Integrations/mlx-audio-swift` | Vendored snapshot of [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift) with local patches, listed in `MARVIS_PATCHES.md`. `MarvisVoice` depends on it by relative path, so the two folders stay side by side. |
+| `Integrations/WFFargoMarvisVoice` | The Swift package a host app links. Entry point: `FargoMarvisAnnouncer`. |
+| `Integrations/mlx-audio-swift` | Vendored snapshot of [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift) with local patches, listed in `MARVIS_PATCHES.md`. `WFFargoMarvisVoice` depends on it by relative path, so the two folders stay side by side. |
 | `MarvisAudioTest` | Sample iOS app with a diagnostics panel and scripted test scenarios. |
 
 ## Using the package
 
 ```swift
-import MarvisVoice
+import WFFargoMarvisVoice
 
-let announcer = MarvisAnnouncer()          // or MarvisAnnouncer(managesAudioSession: false, speechPriority: .continuity)
+let announcer = FargoMarvisAnnouncer()          // or FargoMarvisAnnouncer(managesAudioSession: false, speechPriority: .continuity)
 announcer.onDiagnostic = { line in print("[Marvis] \(line)") }
 announcer.prewarm()                         // loads the model ahead of the first reply
 announcer.announce(["Hello there."])        // replaces anything currently being spoken
 ```
 
-`MarvisAnnouncer.queuedNotification` and `MarvisAnnouncer.finishedNotification` are posted when speech is
+`FargoMarvisAnnouncer.queuedNotification` and `FargoMarvisAnnouncer.finishedNotification` are posted when speech is
 accepted and when the last sample has played; a host that runs a speech recognizer gates its microphone on them.
 `audioTap` receives every PCM chunk for recording or analysis.
 

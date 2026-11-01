@@ -1,4 +1,4 @@
-# MarvisVoice's pinned MLXAudio dependency
+# WFFargoMarvisVoice's pinned MLXAudio dependency
 
 Upstream: https://github.com/Blaizzy/mlx-audio-swift
 
@@ -25,7 +25,7 @@ Build the app with Xcode in **Release** for realistic inference performance.
 Plain `swift test` does not build the required Metal shader bundle.
 4. `MarvisTTSModel.generate` serializes generations on the model instance. Each
    generation task first awaits the previous one, because a cancelled generation
-   can still be finishing a frame while `MarvisVoice` starts the next one
+   can still be finishing a frame while `WFFargoMarvisVoice` starts the next one
    on the same KV caches and Mimi streaming state. The caller therefore keeps the
    loaded model across interrupted utterances instead of dropping and reloading
    it (several seconds and a transient double memory footprint per interruption).
@@ -33,7 +33,7 @@ Plain `swift test` does not build the required Metal shader bundle.
    consumer never waits on a stream that nothing will complete.
 5. `MarvisTTSModel.generate` takes an optional `maxAudioSeconds` (default 60, the
    previous fixed limit). The model sometimes misses its end-of-speech frame and
-   keeps producing noise until the limit; `MarvisVoice` bounds each piece to
+   keeps producing noise until the limit; `WFFargoMarvisVoice` bounds each piece to
    a few times its expected spoken length. The prompt-length precondition still
    uses the absolute 60 s limit so the context budget is unchanged.
 6. `ModelUtils.resolveOrDownloadModel` and `Mimi.fromPretrained` verify cached
@@ -43,7 +43,7 @@ Plain `swift test` does not build the required Metal shader bundle.
    until the file was replaced. Incomplete weights are now cleared and downloaded again.
 
 7. `MarvisTTSModel.memoryReport()` and `MarvisTTSModel.releaseCachedMemory()` expose
-   MLX memory figures and cache release, so the `MarvisVoice` package can report and
+   MLX memory figures and cache release, so the `WFFargoMarvisVoice` package can report and
    trim MLX memory without declaring its own dependency on `mlx-swift`.
 
 Dependency ranges in `Package.swift` are the upstream ones (`mlx-swift` from 0.30.6,

@@ -3,10 +3,10 @@ import os
 
 /// Telemetry about synthesis and playback, so a host app can see why speech sounds the way it does.
 ///
-/// Every message goes to the unified log (subsystem `MarvisVoice`, category `Marvis`). A host can
-/// also receive the same lines through `MarvisAnnouncer.onDiagnostic` or `Marvis.onDiagnostic`.
+/// Every message goes to the unified log (subsystem `WFFargoMarvisVoice`, category `Marvis`). A host can
+/// also receive the same lines through `FargoMarvisAnnouncer.onDiagnostic` or `Marvis.onDiagnostic`.
 enum MarvisDiagnostics {
-    private static let logger = Logger(subsystem: "MarvisVoice", category: "Marvis")
+    private static let logger = Logger(subsystem: "WFFargoMarvisVoice", category: "Marvis")
     private static let lock = NSLock()
     nonisolated(unsafe) private static var sink: (@Sendable (String) -> Void)?
     nonisolated(unsafe) private static var audioSink: (@Sendable ([Float], Int) -> Void)?

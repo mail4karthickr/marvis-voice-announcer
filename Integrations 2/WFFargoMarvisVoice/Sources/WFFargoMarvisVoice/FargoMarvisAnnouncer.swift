@@ -3,16 +3,17 @@ import Metal
 
 /// Speaks text with the Marvis on-device neural voice (MLX).
 ///
-/// Drives the same `Marvis` entry points as the Marvis demo, so the host app's voice speak-over and the demo share
-/// one synthesis/playback path. The host registers this with its voice provider factory, and the conformance to the
-/// host's announcer protocol is declared there, so this engine package stays independent of the host.
+/// Drives the same `Marvis` entry points as the Marvis demo, so WFFargo voice speak-over and the demo share one
+/// synthesis/playback path. The host app registers this with WFFargo's `FargoMarvisVoice.providerFactory`. The
+/// conformance to `FargoMarvisAnnouncing` is declared in the host app so this engine package stays independent of
+/// WFFargo.
 @MainActor
-public final class MarvisAnnouncer {
-    /// Posted when an announcement is accepted and when the last one has finished playing. A host that runs a
-    /// speech recognizer gates its hands-free mic on these, so it does not tear Marvis down mid-reply. Keep them
-    /// in sync with the host's system-voice announcer.
-    public static let queuedNotification = Notification.Name("marvisSpeechAnnouncementQueued")
-    public static let finishedNotification = Notification.Name("marvisSpeechAnnouncementFinished")
+public final class FargoMarvisAnnouncer {
+    /// WFFargo gates its hands-free mic resume on these notifications; keep them in sync with
+    /// `FargoSpeechAnnouncer` so Marvis is not torn down by the recognizer restarting mid-reply.
+    /// Posted when an announcement is accepted and when the last one has finished playing.
+    public static let queuedNotification = Notification.Name("fargoSpeechAnnouncementQueued")
+    public static let finishedNotification = Notification.Name("fargoSpeechAnnouncementFinished")
 
     private let marvis: Marvis
     private var didPrewarm = false
@@ -20,7 +21,7 @@ public final class MarvisAnnouncer {
 
     /// One line per notable event: model load time and memory, per-piece generation speed, quality changes,
     /// player underruns and rebuffering, audio engine or session changes. The same lines go to the unified
-    /// log under subsystem `MarvisVoice`, category `Marvis`.
+    /// log under subsystem `WFFargoMarvisVoice`, category `Marvis`.
     public var onDiagnostic: (@Sendable (String) -> Void)? {
         get { marvis.onDiagnostic }
         set { marvis.onDiagnostic = newValue }

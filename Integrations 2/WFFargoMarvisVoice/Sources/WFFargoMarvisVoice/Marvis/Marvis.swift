@@ -54,7 +54,7 @@ public final class Marvis {
     @ObservationIgnored public var onPlaybackStart: (@MainActor () -> Void)?
     /// Receives one line per notable event: model load, per-piece generation speed, quality changes,
     /// player underruns and rebuffering, audio engine or session changes, MLX memory. The same lines go to
-    /// the unified log under subsystem `MarvisVoice`. One sink is shared by all instances.
+    /// the unified log under subsystem `WFFargoMarvisVoice`. One sink is shared by all instances.
     @ObservationIgnored public var onDiagnostic: (@Sendable (String) -> Void)? {
         didSet { MarvisDiagnostics.setSink(onDiagnostic) }
     }

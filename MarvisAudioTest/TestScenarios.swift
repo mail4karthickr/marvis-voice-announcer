@@ -4,11 +4,11 @@
 //
 //  Scripted scenarios for command-line device runs, selected with launch arguments:
 //    -scenario basic|stop|interrupt|rapid|streaming|stress   -exitWhenDone
-//  Nothing here is part of the MarvisVoice package.
+//  Nothing here is part of the WFFargoMarvisVoice package.
 //
 
 import Foundation
-import MarvisVoice
+import WFFargoMarvisVoice
 
 @MainActor
 enum TestScenarios {
@@ -35,7 +35,7 @@ enum TestScenarios {
         CommandLine.arguments.contains("-exitWhenDone")
     }
 
-    static func run(_ name: String, announcer: MarvisAnnouncer, sampleText: String) {
+    static func run(_ name: String, announcer: FargoMarvisAnnouncer, sampleText: String) {
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(1))
             log("test: scenario \(name)")
@@ -98,7 +98,7 @@ enum TestScenarios {
     }
 
     private static func waitForFinished() async {
-        let name = MarvisAnnouncer.finishedNotification
+        let name = FargoMarvisAnnouncer.finishedNotification
         for await _ in NotificationCenter.default.notifications(named: name) { return }
     }
 

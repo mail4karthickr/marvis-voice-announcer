@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MarvisVoice
+import WFFargoMarvisVoice
 
 /// Diagnostics lines from the voice package, kept for display.
 @MainActor @Observable
@@ -20,15 +20,15 @@ final class DiagnosticsLog {
 }
 
 struct ContentView: View {
-    private let announcer = MarvisAnnouncer()
+    private let announcer = FargoMarvisAnnouncer()
     @State private var text: String = ContentView.sampleText
     @State private var status: String = "Idle"
     @State private var isSpeaking: Bool = false
     @State private var log = DiagnosticsLog()
     @State private var exitTask: Task<Void, Never>?
 
-    private static let queuedNotification = MarvisAnnouncer.queuedNotification
-    private static let finishedNotification = MarvisAnnouncer.finishedNotification
+    private static let queuedNotification = FargoMarvisAnnouncer.queuedNotification
+    private static let finishedNotification = FargoMarvisAnnouncer.finishedNotification
 
     var body: some View {
         VStack(spacing: 12) {
@@ -106,14 +106,14 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: Self.queuedNotification)) { _ in
             isSpeaking = true
             status = "Speaking…"
-            TestScenarios.log("notification: marvisSpeechAnnouncementQueued")
+            TestScenarios.log("notification: fargoSpeechAnnouncementQueued")
             exitTask?.cancel()
             exitTask = nil
         }
         .onReceive(NotificationCenter.default.publisher(for: Self.finishedNotification)) { _ in
             isSpeaking = false
             status = "Done"
-            TestScenarios.log("notification: marvisSpeechAnnouncementFinished")
+            TestScenarios.log("notification: fargoSpeechAnnouncementFinished")
             if let line = TestAudioRecorder.shared.flush() {
                 TestScenarios.log(line)
                 log.append(line)
@@ -160,7 +160,7 @@ struct ContentView: View {
     private static let sampleText = """
     Hello, this is a longer test utterance for the Marvis neural voice engine. \
     The purpose of this sample app is to isolate and reproduce the audio distortion \
-    that appears when MarvisVoice is embedded inside a larger host application. \
+    that appears when WFFargoMarvisVoice is embedded inside the larger Fargo application. \
     By running the same synthesizer and playback pipeline in a minimal container, we can \
     rule out interference from unrelated audio sessions, background services, or other \
     features that may compete for the microphone, the speaker, or the audio session category. \

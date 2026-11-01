@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		93D237143096C90A0041FD67 /* MarvisVoice in Frameworks */ = {isa = PBXBuildFile; productRef = 93D237133096C90A0041FD67 /* MarvisVoice */; };
-		93D237173096CBCF0041FD67 /* MarvisVoice in Frameworks */ = {isa = PBXBuildFile; productRef = 93D237163096CBCF0041FD67 /* MarvisVoice */; };
+		93D237143096C90A0041FD67 /* WFFargoMarvisVoice in Frameworks */ = {isa = PBXBuildFile; productRef = 93D237133096C90A0041FD67 /* WFFargoMarvisVoice */; };
+		93D237173096CBCF0041FD67 /* WFFargoMarvisVoice in Frameworks */ = {isa = PBXBuildFile; productRef = 93D237163096CBCF0041FD67 /* WFFargoMarvisVoice */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93D237173096CBCF0041FD67 /* MarvisVoice in Frameworks */,
-				93D237143096C90A0041FD67 /* MarvisVoice in Frameworks */,
+				93D237173096CBCF0041FD67 /* WFFargoMarvisVoice in Frameworks */,
+				93D237143096C90A0041FD67 /* WFFargoMarvisVoice in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +72,8 @@
 			);
 			name = MarvisAudioTest;
 			packageProductDependencies = (
-				93D237133096C90A0041FD67 /* MarvisVoice */,
-				93D237163096CBCF0041FD67 /* MarvisVoice */,
+				93D237133096C90A0041FD67 /* WFFargoMarvisVoice */,
+				93D237163096CBCF0041FD67 /* WFFargoMarvisVoice */,
 			);
 			productName = MarvisAudioTest;
 			productReference = 93D237043096C79D0041FD67 /* MarvisAudioTest.app */;
@@ -104,7 +104,7 @@
 			mainGroup = 93D236FB3096C79C0041FD67;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				93D237153096CBCF0041FD67 /* XCLocalSwiftPackageReference "Integrations/MarvisVoice" */,
+				93D237153096CBCF0041FD67 /* XCLocalSwiftPackageReference "Integrations/WFFargoMarvisVoice" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 93D237053096C79D0041FD67 /* Products */;
@@ -348,20 +348,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		93D237153096CBCF0041FD67 /* XCLocalSwiftPackageReference "Integrations/MarvisVoice" */ = {
+		93D237153096CBCF0041FD67 /* XCLocalSwiftPackageReference "Integrations/WFFargoMarvisVoice" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Integrations/MarvisVoice;
+			relativePath = Integrations/WFFargoMarvisVoice;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		93D237133096C90A0041FD67 /* MarvisVoice */ = {
+		93D237133096C90A0041FD67 /* WFFargoMarvisVoice */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = MarvisVoice;
+			productName = WFFargoMarvisVoice;
 		};
-		93D237163096CBCF0041FD67 /* MarvisVoice */ = {
+		93D237163096CBCF0041FD67 /* WFFargoMarvisVoice */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = MarvisVoice;
+			productName = WFFargoMarvisVoice;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
