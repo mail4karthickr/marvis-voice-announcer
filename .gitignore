@@ -1,0 +1,14 @@
+# Xcode / SwiftPM
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.DS_Store
+
+# Local tooling and archives
+.claude/
+*.zip
+
+# Model weights are downloaded on the device at runtime, never committed
+*.safetensors

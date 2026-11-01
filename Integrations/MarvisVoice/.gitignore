@@ -1,0 +1,10 @@
+# Xcode / SwiftPM
+.build/
+.swiftpm/
+*.xcodeproj/xcuserdata/
+xcuserdata/
+.DS_Store
+
+# On-device model caches (downloaded at runtime, never committed)
+huggingface/
+*.safetensors
