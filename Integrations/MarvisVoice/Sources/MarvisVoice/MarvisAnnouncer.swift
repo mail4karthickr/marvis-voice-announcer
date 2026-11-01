@@ -101,7 +101,7 @@ public final class MarvisAnnouncer {
             defer { self?.postFinished() }
             do { try await body() }
             catch is CancellationError {}
-            catch { MarvisDiagnostics.log("announce failed: \(error.localizedDescription)") }
+            catch { MarvisDiagnostics.log("announce failed: \(MarvisDiagnostics.describe(error))") }
         }
     }
 

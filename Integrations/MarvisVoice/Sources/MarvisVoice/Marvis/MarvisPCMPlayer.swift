@@ -66,7 +66,9 @@ actor MarvisPCMPlayer {
     private let engine = AVAudioEngine()
     private let node = AVAudioPlayerNode()
     private var format: AVAudioFormat?
-    private var sessionActivated = false
+    /// True when this player set the session category itself. A session the host configured (for
+    /// example `.playAndRecord` around a speech recognizer) is used as found and never deactivated.
+    private var sessionOwned = false
     nonisolated(unsafe) private var observers: [NSObjectProtocol] = []
 
     /// Identifies the utterance being played; chunks and completions from a stopped utterance are ignored.
@@ -109,7 +111,7 @@ actor MarvisPCMPlayer {
         guard !chunk.samples.isEmpty else { return }
         try Task.checkCancellation()
         if let rtf = chunk.expectedRTF { expectedRTF = rtf }
-        if format == nil { try start(sampleRate: chunk.sampleRate) }
+        if format == nil { try await start(sampleRate: chunk.sampleRate) }
         guard let format,
               let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(chunk.samples.count)),
               let channel = buffer.floatChannelData?[0] else {
@@ -170,20 +172,17 @@ actor MarvisPCMPlayer {
         rebufferTarget = 0
         underruns = 0
         rebufferStartedAt = nil
-        if sessionActivated {
-            sessionActivated = false
+        if sessionOwned {
+            sessionOwned = false
             try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         }
     }
 
     // MARK: Engine
 
-    private func start(sampleRate: Int) throws {
+    private func start(sampleRate: Int) async throws {
         if configuration.managesAudioSession {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playback, mode: .spokenAudio, options: [])
-            try session.setActive(true)
-            sessionActivated = true
+            await configureSession()
         }
         guard let created = AVAudioFormat(standardFormatWithSampleRate: Double(sampleRate), channels: 1) else {
             throw MarvisError.message("Could not configure audio playback.")
@@ -191,12 +190,55 @@ actor MarvisPCMPlayer {
         format = created
         engine.connect(node, to: engine.mainMixerNode, format: created)
         engine.prepare()
-        try engine.start()
+        do {
+            try engine.start()
+        } catch {
+            engine.disconnectNodeOutput(node)
+            format = nil
+            throw MarvisError.message("Audio engine could not start: \(MarvisDiagnostics.describe(error))")
+        }
         installObservers()
         let prebuffer = prebufferSeconds()
         rebufferTarget = samples(for: prebuffer)
         let basis = expectedRTF.map { String(format: " for rtf %.2f", $0) } ?? ""
         MarvisDiagnostics.log("player: started, route \(routeDescription), prebuffer \(MarvisDiagnostics.seconds(prebuffer))\(basis)")
+    }
+
+    /// Prepares the shared audio session without ever failing the utterance over it. A host that is
+    /// recording (speech recognizer) keeps its `.playAndRecord` category; output is sent to the speaker so
+    /// speech is not played through the receiver. Activation can be refused with "insufficient priority"
+    /// while a recognizer, Siri or a call still holds audio, which is usually over within a moment, so it
+    /// is retried once. If the session still cannot be activated the engine is started anyway; only an
+    /// engine that cannot start fails the utterance.
+    private func configureSession() async {
+        let session = AVAudioSession.sharedInstance()
+        if session.category == .playAndRecord || session.category == .record {
+            MarvisDiagnostics.log("player: host session is \(session.category.rawValue), keeping it")
+            if session.category == .playAndRecord, !session.categoryOptions.contains(.defaultToSpeaker) {
+                do {
+                    try session.overrideOutputAudioPort(.speaker)
+                } catch {
+                    MarvisDiagnostics.log("player: could not route to the speaker: \(MarvisDiagnostics.describe(error))")
+                }
+            }
+        } else {
+            do {
+                try session.setCategory(.playback, mode: .spokenAudio, options: [])
+                sessionOwned = true
+            } catch {
+                MarvisDiagnostics.log("player: could not set the playback category: \(MarvisDiagnostics.describe(error))")
+            }
+        }
+        for attempt in 1...2 {
+            do {
+                try session.setActive(true)
+                return
+            } catch {
+                MarvisDiagnostics.log("player: session activation failed (attempt \(attempt)): \(MarvisDiagnostics.describe(error))")
+                if attempt == 1 { try? await Task.sleep(for: .milliseconds(350)) }
+            }
+        }
+        MarvisDiagnostics.log("player: continuing without activating the session")
     }
 
     /// Restarts a stopped engine. Calling `play` on a node whose engine is stopped raises an exception, so
@@ -206,7 +248,7 @@ actor MarvisPCMPlayer {
         do {
             try engine.start()
         } catch {
-            throw MarvisError.message("Audio engine could not be restarted: \(error.localizedDescription)")
+            throw MarvisError.message("Audio engine could not be restarted: \(MarvisDiagnostics.describe(error))")
         }
         if playbackStarted, !rebuffering, !interrupted { node.play() }
     }
@@ -379,7 +421,11 @@ actor MarvisPCMPlayer {
             guard interrupted else { return }
             interrupted = false
             if configuration.managesAudioSession {
-                try? AVAudioSession.sharedInstance().setActive(true)
+                do {
+                    try AVAudioSession.sharedInstance().setActive(true)
+                } catch {
+                    MarvisDiagnostics.log("player: reactivation after interruption failed: \(MarvisDiagnostics.describe(error))")
+                }
             }
             do {
                 try restartEngine()
