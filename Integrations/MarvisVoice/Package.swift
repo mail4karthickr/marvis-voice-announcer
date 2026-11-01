@@ -9,8 +9,8 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "MLXAudio", path: "../mlx-audio-swift"),
-        // Same series mlx-audio-swift pins (see MARVIS_PATCHES.md item 6), so both resolve to the one copy of MLX in the app.
-        .package(url: "https://github.com/ml-explore/mlx-swift.git", .upToNextMinor(from: "0.31.4")),
+        // Declared exactly as mlx-audio-swift declares it, so this adds nothing to dependency resolution.
+        .package(url: "https://github.com/ml-explore/mlx-swift.git", .upToNextMajor(from: "0.30.6")),
     ],
     targets: [
         .target(

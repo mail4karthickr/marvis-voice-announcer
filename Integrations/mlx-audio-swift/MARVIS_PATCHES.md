@@ -36,13 +36,14 @@ Plain `swift test` does not build the required Metal shader bundle.
    keeps producing noise until the limit; `MarvisVoice` bounds each piece to
    a few times its expected spoken length. The prompt-length precondition still
    uses the absolute 60 s limit so the context budget is unchanged.
-6. Dependency ranges are pinned to the series this snapshot compiles against:
-   `mlx-swift` 0.31.x and `mlx-swift-lm` 3.31.x (`upToNextMinor`). The upstream
-   `upToNextMajor` ranges let a re-resolution pick mlx-swift-lm 3.32, where
-   `makePromptCache` throws and `CSMModel`/`SparkModel` no longer compile. Widen
-   the ranges only together with a refreshed snapshot.
-7. `ModelUtils.resolveOrDownloadModel` and `Mimi.fromPretrained` verify cached
+6. `ModelUtils.resolveOrDownloadModel` and `Mimi.fromPretrained` verify cached
    safetensors files against their own headers (`ModelUtils.safetensorsIsComplete`).
    An interrupted download left a 150 MB `model.safetensors` (published size 665 MB)
    on a device; it existed, loaded without error and produced noise instead of speech
    until the file was replaced. Incomplete weights are now cleared and downloaded again.
+
+Dependency ranges in `Package.swift` are the upstream ones (`mlx-swift` from 0.30.6,
+`mlx-swift-lm` from 3.31.3, both `upToNextMajor`). The snapshot is known to compile
+against mlx-swift 0.31.4 and mlx-swift-lm 3.31.4, which the checked-in
+`Package.resolved` files pin. mlx-swift-lm 3.32 changes `makePromptCache` to throw and
+breaks `CSMModel`/`SparkModel`; if a re-resolution moves there, restore the pins.
