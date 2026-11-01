@@ -596,6 +596,27 @@ public extension MarvisTTSModel {
     }
 }
 
+// MARK: - Memory, for hosts that do not link MLX directly
+
+public extension MarvisTTSModel {
+    /// MLX memory in use, in bytes.
+    struct MemoryReport: Sendable {
+        public let active: Int
+        public let cache: Int
+        public let peak: Int
+    }
+
+    static func memoryReport() -> MemoryReport {
+        let snapshot = Memory.snapshot()
+        return MemoryReport(active: snapshot.activeMemory, cache: snapshot.cacheMemory, peak: snapshot.peakMemory)
+    }
+
+    /// Returns MLX's recycled buffers to the system, for example between utterances.
+    static func releaseCachedMemory() {
+        Memory.clearCache()
+    }
+}
+
 // MARK: - Mimi helpers
 
 private extension MarvisTTSModel {

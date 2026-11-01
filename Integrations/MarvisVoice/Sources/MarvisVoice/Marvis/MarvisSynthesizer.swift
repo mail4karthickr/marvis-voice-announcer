@@ -1,5 +1,4 @@
 import Foundation
-import MLX
 @preconcurrency import MLXAudioTTS
 
 /// A single owner serializes access to the mutable Marvis model and codec caches, and adapts generation
@@ -87,7 +86,7 @@ actor MarvisSynthesizer {
             busy = false
             // Hand MLX's recycled buffers back between utterances. A memory-constrained host gets up to the
             // cache limit (100 MB) back, and the next utterance re-warms the cache within a few frames.
-            Memory.clearCache()
+            MarvisTTSModel.releaseCachedMemory()
         }
         let model = try await load()
         let voice: MarvisTTSModel.Voice = voiceB ? .conversationalB : .conversationalA
@@ -222,10 +221,10 @@ actor MarvisSynthesizer {
     }
 
     private var memoryDescription: String {
-        let snapshot = Memory.snapshot()
-        return "MLX active \(MarvisDiagnostics.megabytes(snapshot.activeMemory)), "
-            + "cache \(MarvisDiagnostics.megabytes(snapshot.cacheMemory)), "
-            + "peak \(MarvisDiagnostics.megabytes(snapshot.peakMemory))"
+        let report = MarvisTTSModel.memoryReport()
+        return "MLX active \(MarvisDiagnostics.megabytes(report.active)), "
+            + "cache \(MarvisDiagnostics.megabytes(report.cache)), "
+            + "peak \(MarvisDiagnostics.megabytes(report.peak))"
     }
 
     // MARK: Adaptive quality

@@ -42,6 +42,10 @@ Plain `swift test` does not build the required Metal shader bundle.
    on a device; it existed, loaded without error and produced noise instead of speech
    until the file was replaced. Incomplete weights are now cleared and downloaded again.
 
+7. `MarvisTTSModel.memoryReport()` and `MarvisTTSModel.releaseCachedMemory()` expose
+   MLX memory figures and cache release, so the `MarvisVoice` package can report and
+   trim MLX memory without declaring its own dependency on `mlx-swift`.
+
 Dependency ranges in `Package.swift` are the upstream ones (`mlx-swift` from 0.30.6,
 `mlx-swift-lm` from 3.31.3, both `upToNextMajor`). The snapshot is known to compile
 against mlx-swift 0.31.4 and mlx-swift-lm 3.31.4, which the checked-in
