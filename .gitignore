@@ -12,3 +12,6 @@ xcuserdata/
 
 # Model weights are downloaded on the device at runtime, never committed
 *.safetensors
+
+# Finder extraction of MarvisChangedFiles.zip
+Integrations 2/
